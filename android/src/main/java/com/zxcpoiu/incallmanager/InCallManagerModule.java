@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2017 Henry Lin @zxcpoiu
- * 
+ *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
@@ -195,7 +195,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
         UiThreadUtil.runOnUiThread(() -> {
             bluetoothManager = AppRTCBluetoothManager.create(reactContext, this);
-        });
+			Log.d(TAG, "BluetoothManager created: " + bluetoothManager);
+		});
 
         Log.d(TAG, "InCallManager initialized");
     }
@@ -555,11 +556,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
     @ReactMethod
     public void start(final String _media, final boolean auto, final String ringbackUriType) {
         media = _media;
-        if (media.equals("video")) {
-            defaultSpeakerOn = true;
-        } else {
-            defaultSpeakerOn = false;
-        }
+        defaultSpeakerOn = media.equals("video");
         automatic = auto;
         if (!audioManagerActivated) {
             audioManagerActivated = true;
@@ -918,8 +915,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         }
     }
 
-    /** 
-     * This is part of start() process. 
+    /**
+     * This is part of start() process.
      * ringbackUriType must not empty. empty means do not play.
      */
     @ReactMethod
@@ -953,7 +950,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             ringbackUri = getRingbackUri(ringbackUriType);
             if (ringbackUri == null) {
                 Log.d(TAG, "startRingback(): no available media");
-                return;    
+                return;
             }
 
             mRingback = new myMediaPlayer();
@@ -971,7 +968,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             mRingback.startPlay(data);
         } catch(Exception e) {
             Log.d(TAG, "startRingback() failed", e);
-        }   
+        }
     }
 
     @ReactMethod
@@ -983,11 +980,11 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             }
         } catch(Exception e) {
             Log.d(TAG, "stopRingback() failed");
-        }   
+        }
     }
 
-    /** 
-     * This is part of start() process. 
+    /**
+     * This is part of start() process.
      * busytoneUriType must not empty. empty means do not play.
      * return false to indicate play tone failed and should be stop() immediately
      * otherwise, it will stop() after a tone completed.
@@ -1021,7 +1018,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             busytoneUri = getBusytoneUri(busytoneUriType);
             if (busytoneUri == null) {
                 Log.d(TAG, "startBusytone(): no available media");
-                return false;    
+                return false;
             }
 
             mBusytone = new myMediaPlayer();
@@ -1039,7 +1036,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         } catch(Exception e) {
             Log.d(TAG, "startBusytone() failed", e);
             return false;
-        }   
+        }
     }
 
     public void stopBusytone() {
@@ -1050,7 +1047,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             }
         } catch(Exception e) {
             Log.d(TAG, "stopBusytone() failed");
-        }   
+        }
     }
 
     @ReactMethod
@@ -1165,7 +1162,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.d(TAG, String.format("MediaPlayer %s onError(). what: %d, extra: %d", name, what, extra));
                 //return True if the method handled the error
-                //return False, or not having an OnErrorListener at all, will cause the OnCompletionListener to be called. Get news & tips 
+                //return False, or not having an OnErrorListener at all, will cause the OnCompletionListener to be called. Get news & tips
                 return true;
             }
         });
@@ -1191,7 +1188,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
                 } else if (name.equals("mRingtone")) {
                     audioManager.setMode(AudioManager.MODE_RINGTONE);
-                } 
+                }
                 updateAudioRoute();
                 mp.start();
             }
@@ -1273,7 +1270,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         String type;
         // --- _type would never be empty here. just in case.
         if (_type.equals("_DEFAULT_") ||  _type.isEmpty()) {
-            //type = fileSysWithExt; // --- 
+            //type = fileSysWithExt; // ---
             return getDefaultUserUri("defaultBusytoneUri");
         } else {
             type = _type;
@@ -1463,7 +1460,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
                         } else if (caller.equals("mRingtone")) {
                             audioManager.setMode(AudioManager.MODE_RINGTONE);
-                        } 
+                        }
                         InCallManagerModule.this.updateAudioRoute();
 
                         tg.startTone(toneType);
@@ -1829,7 +1826,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     newAudioDevice = getPreferredAudioDevice();
                 }
             }
-            
+
             if (newAudioDevice == AudioDevice.BLUETOOTH
                     && bluetoothManager.getState() != AppRTCBluetoothManager.State.SCO_CONNECTED) {
                 newAudioDevice = getPreferredAudioDevice(true); // --- skip bluetooth
