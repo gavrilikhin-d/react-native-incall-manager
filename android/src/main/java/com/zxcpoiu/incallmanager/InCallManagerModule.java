@@ -193,10 +193,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         wakeLockUtils = new InCallWakeLockUtils(reactContext);
         proximityManager = InCallProximityManager.create(reactContext, this);
 
-        UiThreadUtil.runOnUiThread(() -> {
-            bluetoothManager = AppRTCBluetoothManager.create(reactContext, this);
-			Log.d(TAG, "BluetoothManager created: " + bluetoothManager);
-		});
+        bluetoothManager = AppRTCBluetoothManager.create(reactContext, this);
+		Log.d(TAG, "BluetoothManager created: " + bluetoothManager);
 
         Log.d(TAG, "InCallManager initialized");
     }
@@ -568,9 +566,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             storeOriginalAudioSetup();
             requestAudioFocus();
             startEvents();
-            UiThreadUtil.runOnUiThread(() -> {
-                bluetoothManager.start();
-            });
+            Log.d(TAG, "before starting bluetoothManager: " + bluetoothManager);
+            bluetoothManager.start();
             // TODO: even if not acquired focus, we can still play sounds. but need figure out which is better.
             //getCurrentActivity().setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
             audioManager.setMode(defaultAudioMode);
@@ -609,9 +606,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                 setSpeakerphoneOn(false);
                 setMicrophoneMute(false);
                 forceSpeakerOn = 0;
-                UiThreadUtil.runOnUiThread(() -> {
-                    bluetoothManager.stop();
-                });
+                bluetoothManager.stop();
                 restoreOriginalAudioSetup();
                 abandonAudioFocus();
                 audioManagerActivated = false;
