@@ -534,8 +534,6 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             setStreamSolo(int, boolean)
             setStreamMute(int, boolean)
         }
-
-        // -- TODO: bluetooth support
     */
 
     private void sendEvent(final String eventName, @Nullable WritableMap params) {
